@@ -59,4 +59,4 @@ material/0 = SubResource( 6 )
 transform = Transform( 0.858888, 0, 0.512163, 0, 1, 0, -0.512163, 0, 0.858888, 27.3553, 9.30748, 26.4749 )
 
 [node name="car" parent="." instance=ExtResource( 5 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 18.0878, 0.0345442, 6.14135 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.18927, 0.561218, 15.2617 )
