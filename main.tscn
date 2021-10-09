@@ -1,20 +1,14 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://scripts/main.cs" type="Script" id=1]
 [ext_resource path="res://scripts/Cube.cs" type="Script" id=2]
-[ext_resource path="res://assets/textures/wood_box.jpg" type="Texture" id=3]
 [ext_resource path="res://assets/textures/green_grass.jpg" type="Texture" id=4]
 [ext_resource path="res://car.tscn" type="PackedScene" id=5]
 
 [sub_resource type="BoxShape" id=1]
+extents = Vector3( 1, 0.414409, 1.57606 )
 
-[sub_resource type="CubeMesh" id=2]
-
-[sub_resource type="SpatialMaterial" id=3]
-albedo_texture = ExtResource( 3 )
-uv1_scale = Vector3( 3.064, 2.051, 1 )
-
-[sub_resource type="BoxShape" id=4]
+[sub_resource type="BoxShape" id=7]
 
 [sub_resource type="CubeMesh" id=5]
 
@@ -34,14 +28,14 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.67638, 0 )
 script = ExtResource( 2 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Cube"]
+transform = Transform( 0.740698, 0, 0, 0, 1.69661, 0, 0, 0, 1.02322, 0, 0.73652, -0.0464422 )
 shape = SubResource( 1 )
 
-[node name="MeshInstance" type="MeshInstance" parent="Cube"]
-mesh = SubResource( 2 )
-material/0 = SubResource( 3 )
+[node name="car" parent="Cube" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 
 [node name="FP_Camera" type="Camera" parent="Cube"]
-transform = Transform( 1, 0, 0, 0, 0.99979, -0.0204888, 0, 0.0204888, 0.99979, 0.0131884, 2.12824, -0.715581 )
+transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.0131884, 1.12717, 0.107381 )
 fov = 60.8
 
 [node name="Floor" type="RigidBody" parent="."]
@@ -49,14 +43,12 @@ transform = Transform( 32, 0, 0, 0, 0.05, 0, 0, 0, 32, 0, 0, 0 )
 mode = 1
 
 [node name="CollisionShape" type="CollisionShape" parent="Floor"]
-shape = SubResource( 4 )
+shape = SubResource( 7 )
 
 [node name="MeshInstance" type="MeshInstance" parent="Floor"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0638462, -3.45322, 0.00565386 )
 mesh = SubResource( 5 )
 material/0 = SubResource( 6 )
 
 [node name="TP_Camera" type="Camera" parent="."]
-transform = Transform( 0.858888, 0, 0.512163, 0, 1, 0, -0.512163, 0, 0.858888, 27.3553, 9.30748, 26.4749 )
-
-[node name="car" parent="." instance=ExtResource( 5 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.18927, 0.561218, 15.2617 )
+transform = Transform( 0.66437, 1.31865e-08, 0.747404, -1.02827e-08, 1, -8.50268e-09, -0.747404, -2.03642e-09, 0.66437, 3.53651, 1.44188, 3.83137 )

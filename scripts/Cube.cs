@@ -28,6 +28,6 @@ public class Cube : RigidBody
     // Drag shit
     float speed = LinearVelocity.Length();
     float forceFactor = Mathf.InverseLerp(10, 0, speed);
-    AddCentralForce(-Transform.basis.z * yInput * forceMult * forceFactor); 
+    AddCentralForce(Transform.basis.z * yInput * forceMult * forceFactor); 
  }
 }
