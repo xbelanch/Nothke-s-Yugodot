@@ -2,12 +2,12 @@
 
 importer="scene"
 type="PackedScene"
-path="res://.import/car.fbx-7ef200836599b9a3c17b73a855314464.scn"
+path="res://.import/car_v3.glb-35e75c9219a9da8e592652688ceca98d.scn"
 
 [deps]
 
-source_file="res://assets/blends/fbx/car.fbx"
-dest_files=[ "res://.import/car.fbx-7ef200836599b9a3c17b73a855314464.scn" ]
+source_file="res://assets/blends/glb/car_v3.glb"
+dest_files=[ "res://.import/car_v3.glb-35e75c9219a9da8e592652688ceca98d.scn" ]
 
 [params]
 
