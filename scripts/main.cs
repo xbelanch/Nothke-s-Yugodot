@@ -20,8 +20,8 @@ public override void _Input(InputEvent inputEvent)
       // Switch First Person Camera and Third Person Camera
       if ((KeyList)keyEvent.Scancode == KeyList.C)
       {
-          GetNode<Camera>("TP_Camera").Current = GetNode<Camera>("Cube/FP_Camera").Current;
-          GetNode<Camera>("Cube/FP_Camera").Current = !GetNode<Camera>("TP_Camera").Current;
+          GetNode<Camera>("Car/TP_Camera").Current = GetNode<Camera>("Car/FP_Camera").Current;
+          GetNode<Camera>("Car/FP_Camera").Current = !GetNode<Camera>("Car/TP_Camera").Current;
       }
     } else {
       // Quit the game
