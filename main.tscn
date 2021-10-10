@@ -24,7 +24,7 @@ transform = Transform( 0.535208, 0.21863, 0.815937, -0.84472, 0.138522, 0.516971
 shadow_enabled = true
 
 [node name="Car" type="RigidBody" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.665206, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.40177, 0 )
 script = ExtResource( 2 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Car"]
@@ -32,14 +32,11 @@ transform = Transform( 0.740698, 0, 0, 0, 1.69661, 0, 0, 0, 1.02322, 0, 0.717085
 shape = SubResource( 1 )
 
 [node name="car_model" parent="Car" instance=ExtResource( 5 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00238621, 0.0172439, -0.00605688 )
 
 [node name="FP_Camera" type="Camera" parent="Car"]
 transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.0131884, 1.12717, 0.107381 )
 fov = 60.8
-
-[node name="TP_Camera" type="Camera" parent="Car"]
-transform = Transform( -1, 1.51808e-08, -8.60946e-08, 0, 0.984808, 0.173648, 8.74228e-08, 0.173648, -0.984808, 0, 1.823, -5 )
 
 [node name="Floor" type="RigidBody" parent="."]
 transform = Transform( 32, 0, 0, 0, 0.05, 0, 0, 0, 32, 0, 0, 0 )
@@ -53,3 +50,7 @@ shape = SubResource( 2 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0638462, -3.45322, 0.00565386 )
 mesh = SubResource( 3 )
 material/0 = SubResource( 4 )
+
+[node name="TP_Camera" type="Camera" parent="."]
+transform = Transform( -0.438246, -0.0834495, 0.894973, 0, 0.995681, 0.0928398, -0.898855, 0.0406867, -0.436353, 6.88904, 2.22609, -4.31505 )
+current = true

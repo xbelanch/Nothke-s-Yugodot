@@ -14,16 +14,18 @@ namespace Utility
             
         }
 
+        public void clearLines() 
+        {
+            points.Clear();
+        }
+
         public override void _Process(float delta)
         {
             base._Process(delta);
             Clear();
-            // SetColor(new Color(255, 0, 0, 255));
             Begin(Mesh.PrimitiveType.Lines);
             for (int i = 0; i < points.Count; ++i)
-            {
                 AddVertex(points[i]);
-            }
             End();
         }
     }
