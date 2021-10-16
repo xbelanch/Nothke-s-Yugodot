@@ -27,10 +27,10 @@ public class CreateForcer : RigidBody
         //  = new Vector3(wheelTrack, 0, wheelBase);
 
         // car_body = GetNode<Godot.MeshInstance>("car/car_body");
-        points[0] = GetNode<MeshInstance>("car_model/wheel_front_left").Translation;
-        points[1] = GetNode<MeshInstance>("car_model/wheel_front_right").Translation;
-        points[2] = GetNode<MeshInstance>("car_model/wheel_rear_left").Translation;
-        points[3] = GetNode<MeshInstance>("car_model/wheel_rear_right").Translation;
+        points[0] = GetNode<MeshInstance>("car_model/wheel_fl").Translation;
+        points[1] = GetNode<MeshInstance>("car_model/wheel_fr").Translation;
+        points[2] = GetNode<MeshInstance>("car_model/wheel_rl").Translation;
+        points[3] = GetNode<MeshInstance>("car_model/wheel_rr").Translation;
 
         line3D = new LineDrawer3D();
 
@@ -56,7 +56,7 @@ public class CreateForcer : RigidBody
         Input.IsKeyPressed((int)KeyList.S) ? -1 :
         (Input.IsKeyPressed((int)KeyList.W) ? 1 : 0);
 
-    AddTorque(-Transform.basis.y * xInput * torqueMult);
+   
     // AddCentralForce(-LinearVelocity * (1 - delta)); // friction with the ground?
 
     // Drag shit
@@ -66,21 +66,47 @@ public class CreateForcer : RigidBody
     var up = Transform.basis.y;
 
     line3D.clearLines();
+    int wheelsOnGround = 0;
 
-    // Draw lines gizmos if car not collide?
-    var dict = state.IntersectRay(Transform.origin + up * 0.2f, Transform.origin - up);
-    if (dict.Count > 0)
-    {
-        Vector3 hit = (Vector3)dict["position"];
-        foreach (var point in points)
-        {
-            line3D.addLine(point, hit);
-            AddCentralForce(Transform.basis.y * 0.9f); // Wow
-        }
-    } else {
-        
+
+    // Testing intersect ray
+    Vector3 from = Vector3.One * new Vector3(0, -0f, 0);
+    Vector3 to = Vector3.One * new Vector3(0, -1f, 0);
+    // var dict = state.IntersectRay(from, to);
+    var dict = state.IntersectRay(ToGlobal(from), ToGlobal(to));
+    line3D.addLine(from, to);
+    // TODO: Why this not work?
+    if (dict.Count > 0) {
+        AddTorque(-Transform.basis.y * xInput * torqueMult);
+        AddCentralForce(Transform.basis.z * yInput * forceMult);
+        // GD.Print(dict["collider"]);
     }
 
-    AddCentralForce(Transform.basis.z * yInput * forceMult);
+
+
+/*
+    foreach (var point in points)
+    {
+        Vector3 wp = ToGlobal(point);
+        var origin = point + up * 0.2f;
+        var dest = point - up * 3.0f;
+        var dict = state.IntersectRay(origin, dest);
+        // Draw lines gizmos if car not collide?
+        if (dict.Count > 0)
+        {
+            var obj = (Godot.Object)dict["collider"];
+            Vector3 hit = (Vector3)dict["position"];
+            line3D.addLine(origin,hit);
+            wheelsOnGround++;
+        } else {
+            line3D.addLine(ToGlobal(origin),ToGlobal(dest));
+        }
+    }
+    GD.Print(wheelsOnGround);
+    if (wheelsOnGround > 0) {
+        AddTorque(-Transform.basis.y * xInput * torqueMult);
+        AddCentralForce(Transform.basis.z * yInput * forceMult);        
+    }
+    */
  }
 }
