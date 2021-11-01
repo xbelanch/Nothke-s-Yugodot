@@ -1,0 +1,60 @@
+[gd_resource type="VisualShader" load_steps=5 format=2]
+
+[ext_resource path="res://assets/textures/texture_01_purple.png" type="Texture" id=1]
+
+[sub_resource type="VisualShaderNodeInput" id=1]
+input_name = "uv"
+
+[sub_resource type="VisualShaderNodeVectorOp" id=2]
+default_input_values = [ 0, Vector3( 0, 0, 0 ), 1, Vector3( 1, 1, 0 ) ]
+operator = 2
+
+[sub_resource type="VisualShaderNodeTexture" id=3]
+texture = ExtResource( 1 )
+texture_type = 1
+
+[resource]
+code = "shader_type spatial;
+render_mode specular_schlick_ggx;
+
+uniform sampler2D tex_frg_4 : hint_albedo;
+
+
+
+void vertex() {
+// Output:0
+
+}
+
+void fragment() {
+// Input:2
+	vec3 n_out2p0 = vec3(UV, 0.0);
+
+// VectorOp:3
+	vec3 n_in3p1 = vec3(1.00000, 1.00000, 0.00000);
+	vec3 n_out3p0 = n_out2p0 * n_in3p1;
+
+// Texture:4
+	vec4 tex_frg_4_read = texture(tex_frg_4, n_out3p0.xy);
+	vec3 n_out4p0 = tex_frg_4_read.rgb;
+	float n_out4p1 = tex_frg_4_read.a;
+
+// Output:0
+	ALBEDO = n_out4p0;
+
+}
+
+void light() {
+// Output:0
+
+}
+"
+graph_offset = Vector2( -457.667, -92.635 )
+nodes/fragment/0/position = Vector2( 363, -59 )
+nodes/fragment/2/node = SubResource( 1 )
+nodes/fragment/2/position = Vector2( -444.667, 31.365 )
+nodes/fragment/3/node = SubResource( 2 )
+nodes/fragment/3/position = Vector2( -213.667, 14.365 )
+nodes/fragment/4/node = SubResource( 3 )
+nodes/fragment/4/position = Vector2( 27.3335, 19.365 )
+nodes/fragment/connections = PoolIntArray( 2, 0, 3, 0, 3, 0, 4, 0, 4, 0, 0, 0 )
