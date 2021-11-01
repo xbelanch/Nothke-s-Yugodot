@@ -22,11 +22,16 @@ public class CreateForcer : RigidBody
     {
         line = GetNode<ImmediateGeometry>("draw");
         // create the points
-        points[0]= new Vector3(-wheelTrack, 0, wheelBase);
-        points[1] = new Vector3(wheelTrack, 0, wheelBase);
-        points[2] = new Vector3(-wheelTrack, 0, -wheelBase);
-        points[3] = new Vector3(wheelTrack, 0, -wheelBase);
-        
+        // points[0]= new Vector3(-wheelTrack, 0, wheelBase);
+        // points[1] = new Vector3(wheelTrack, 0, wheelBase);
+        // points[2] = new Vector3(-wheelTrack, 0, -wheelBase);
+        // points[3] = new Vector3(wheelTrack, 0, -wheelBase);
+        points[0] = GetNode<MeshInstance>("car_model/wheel_fl").Translation;
+        points[1] = GetNode<MeshInstance>("car_model/wheel_fr").Translation;
+        points[2] = GetNode<MeshInstance>("car_model/wheel_rl").Translation;
+        points[3] = GetNode<MeshInstance>("car_model/wheel_rr").Translation;
+
+
         // car_body = GetNode<Godot.MeshInstance>("car_model/car_body");
         // points[0] = GetNode<MeshInstance>("car_model/wheel_fl").Translation;
         // points[1] = GetNode<MeshInstance>("car_model/wheel_fr").Translation;
@@ -36,12 +41,12 @@ public class CreateForcer : RigidBody
         // line.addLine(Vector3.One * -10, Vector3.One * 10);
         // AddChild(line);
         // Create a material to change line3D color to red
-        // var mat = new SpatialMaterial();
-        // mat.FlagsUsePointSize = true;
-        // mat.VertexColorUseAsAlbedo = true;
-        // mat.FlagsUnshaded = true;
-        // mat.AlbedoColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
-        // line3D.MaterialOverride = mat;
+        var mat = new SpatialMaterial();
+        mat.FlagsUsePointSize = true;
+        mat.VertexColorUseAsAlbedo = true;
+        mat.FlagsUnshaded = true;
+        // mat.AlbedoColor = new Color(1.0f, 1.0f, 0.0f, 1.0f);
+        line.MaterialOverride = mat;
         // AddChild(line3D);
     }
 
@@ -58,7 +63,7 @@ public class CreateForcer : RigidBody
         float speed = LinearVelocity.Length();
 
         int wheelsOnGround = 0;
-        float rayLength = 0.6f;
+        float rayLength = 0.8f;
         var up = Transform.basis.y;
         line.Clear();
         foreach(var p in points) {
@@ -69,7 +74,10 @@ public class CreateForcer : RigidBody
                 wheelsOnGround++;
                 var hit = (Vector3)dict["position"];
                 var normal = (Vector3)dict["normal"];
+
+                // Draw 3D line
                 line.Begin(Mesh.PrimitiveType.Lines);
+                line.SetColor(new Color(1.0f, 1.0f, 0.0f, 1.0f));
                 line.AddVertex(ToLocal(origin));
                 line.AddVertex(ToLocal(hit));
                 line.End();
@@ -78,7 +86,10 @@ public class CreateForcer : RigidBody
                 float spring = 10 * distFromTarget;
                 AddForce(normal * spring, hit - Transform.origin);
             } else {
+
+                // Draw 3D line
                 line.Begin(Mesh.PrimitiveType.Lines);
+                line.SetColor(new Color(1.0f, 0, 1.0f, 0));
                 line.AddVertex(ToLocal(origin));
                 line.AddVertex(ToLocal(dest));
                 line.End();

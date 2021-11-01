@@ -49,7 +49,7 @@ transform = Transform( 0.535208, 0.21863, 0.815937, -0.84472, 0.138522, 0.516971
 shadow_enabled = true
 
 [node name="Car" type="RigidBody" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.67119, 2.59487, 9.42782 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.67119, 4.31193, 9.42782 )
 script = ExtResource( 2 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Car"]
