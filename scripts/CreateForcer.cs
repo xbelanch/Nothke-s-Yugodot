@@ -9,45 +9,28 @@ public class CreateForcer : RigidBody
     public float wheelBase = 1.052f;
     public float wheelTrack = 0.644f;
     Vector3[] points = new Vector3[4];
-    private ImmediateGeometry line;
-    
-    // public MeshInstance car_body;
-    // public MeshInstance wheel_front_left;
-    // public MeshInstance wheel_front_right;
-    // public MeshInstance wheel_rear_left;
-    // public MeshInstance wheel_rear_right;
-    // private LineDrawer3D line;
+    private LineDrawer3D line3D;
 
     public override void _Ready()
     {
-        line = GetNode<ImmediateGeometry>("draw");
         // create the points
-        // points[0]= new Vector3(-wheelTrack, 0, wheelBase);
-        // points[1] = new Vector3(wheelTrack, 0, wheelBase);
-        // points[2] = new Vector3(-wheelTrack, 0, -wheelBase);
-        // points[3] = new Vector3(wheelTrack, 0, -wheelBase);
         points[0] = GetNode<MeshInstance>("car_model/wheel_fl").Translation;
         points[1] = GetNode<MeshInstance>("car_model/wheel_fr").Translation;
         points[2] = GetNode<MeshInstance>("car_model/wheel_rl").Translation;
         points[3] = GetNode<MeshInstance>("car_model/wheel_rr").Translation;
 
-
-        // car_body = GetNode<Godot.MeshInstance>("car_model/car_body");
-        // points[0] = GetNode<MeshInstance>("car_model/wheel_fl").Translation;
-        // points[1] = GetNode<MeshInstance>("car_model/wheel_fr").Translation;
-        // points[0] = GetNode<MeshInstance>("car_model/wheel_rl").Translation;
-        // points[1] = GetNode<MeshInstance>("car_model/wheel_rr").Translation;
-        // line = new LineDrawer3D();
-        // line.addLine(Vector3.One * -10, Vector3.One * 10);
-        // AddChild(line);
-        // Create a material to change line3D color to red
+        // Create a new line and material
+        line3D = new LineDrawer3D();
         var mat = new SpatialMaterial();
         mat.FlagsUsePointSize = true;
         mat.VertexColorUseAsAlbedo = true;
         mat.FlagsUnshaded = true;
-        // mat.AlbedoColor = new Color(1.0f, 1.0f, 0.0f, 1.0f);
-        line.MaterialOverride = mat;
-        // AddChild(line3D);
+        line3D.MaterialOverride = mat;
+        AddChild(line3D);
+    }
+
+    public Vector3 GetVelocityAtPoint(Vector3 point) {
+        return LinearVelocity + AngularVelocity.Cross(point - GlobalTransform.origin);
     }
 
  public override void _PhysicsProcess(float dt)
@@ -65,34 +48,34 @@ public class CreateForcer : RigidBody
         int wheelsOnGround = 0;
         float rayLength = 0.8f;
         var up = Transform.basis.y;
-        line.Clear();
+        line3D.ClearLines();
         foreach(var p in points) {
             var origin = ToGlobal(p) + up  * 0.2f;
             var dest = origin - up * rayLength;
             var dict = spaceState.IntersectRay(origin, dest);
             if (dict.Count > 0) {
-                wheelsOnGround++;
+                var obj = (Godot.Object)dict["collider"];
                 var hit = (Vector3)dict["position"];
                 var normal = (Vector3)dict["normal"];
 
                 // Draw 3D line
-                line.Begin(Mesh.PrimitiveType.Lines);
-                line.SetColor(new Color(1.0f, 1.0f, 0.0f, 1.0f));
-                line.AddVertex(ToLocal(origin));
-                line.AddVertex(ToLocal(hit));
-                line.End();
+                line3D.AddLine(origin, hit, Colors.DarkBlue);
 
                 float distFromTarget = (dest - hit).Length();
                 float spring = 10 * distFromTarget;
-                AddForce(normal * spring, hit - Transform.origin);
-            } else {
 
+                Vector3 pointVelo = GetVelocityAtPoint(origin);
+                line3D.AddLine(origin, origin + pointVelo, Colors.White);
+                
+                float veloAlongWheel = up.Dot(pointVelo);
+                float damp = -veloAlongWheel;
+
+                AddForce(normal * (spring + damp), hit - Transform.origin);
+                
+                wheelsOnGround++;
+            } else {
                 // Draw 3D line
-                line.Begin(Mesh.PrimitiveType.Lines);
-                line.SetColor(new Color(1.0f, 0, 1.0f, 0));
-                line.AddVertex(ToLocal(origin));
-                line.AddVertex(ToLocal(dest));
-                line.End();
+                line3D.AddLine(origin, dest, Colors.GreenYellow);
             }
         }
 

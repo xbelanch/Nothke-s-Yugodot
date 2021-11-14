@@ -1,19 +1,29 @@
-[gd_resource type="VisualShader" load_steps=5 format=2]
+[gd_resource type="VisualShader" load_steps=9 format=2]
 
-[ext_resource path="res://assets/textures/texture_01_red.png" type="Texture" id=1]
+[ext_resource path="res://assets/textures/texture_13.png" type="Texture" id=1]
 
-[sub_resource type="VisualShaderNodeInput" id=2]
-output_port_for_preview = 0
+[sub_resource type="VisualShaderNodeInput" id=1]
 input_name = "uv"
 
-[sub_resource type="VisualShaderNodeVectorOp" id=3]
-output_port_for_preview = 0
+[sub_resource type="VisualShaderNodeVectorOp" id=2]
 default_input_values = [ 0, Vector3( 1, 1, 0 ), 1, Vector3( 100, 100, 0 ) ]
 operator = 2
 
-[sub_resource type="VisualShaderNodeTexture" id=4]
+[sub_resource type="VisualShaderNodeTexture" id=3]
 texture = ExtResource( 1 )
 texture_type = 1
+
+[sub_resource type="VisualShaderNodeVectorDecompose" id=4]
+
+[sub_resource type="VisualShaderNodeVectorCompose" id=5]
+
+[sub_resource type="VisualShaderNodeScalarOp" id=6]
+default_input_values = [ 0, 0.0, 1, 3.0 ]
+operator = 2
+
+[sub_resource type="VisualShaderNodeScalarOp" id=7]
+default_input_values = [ 0, 0.0, 1, 2.0 ]
+operator = 2
 
 [resource]
 code = "shader_type spatial;
@@ -36,8 +46,25 @@ void fragment() {
 	vec3 n_in4p1 = vec3(100.00000, 100.00000, 0.00000);
 	vec3 n_out4p0 = n_out3p0 * n_in4p1;
 
+// VectorDecompose:6
+	float n_out6p0 = n_out4p0.x;
+	float n_out6p1 = n_out4p0.y;
+	float n_out6p2 = n_out4p0.z;
+
+// ScalarOp:8
+	float n_in8p1 = 3.00000;
+	float n_out8p0 = n_out6p0 * n_in8p1;
+
+// ScalarOp:9
+	float n_in9p1 = 2.00000;
+	float n_out9p0 = n_out6p1 * n_in9p1;
+
+// VectorCompose:7
+	float n_in7p2 = 0.00000;
+	vec3 n_out7p0 = vec3(n_out8p0, n_out9p0, n_in7p2);
+
 // Texture:5
-	vec4 tex_frg_5_read = texture(tex_frg_5, n_out4p0.xy);
+	vec4 tex_frg_5_read = texture(tex_frg_5, n_out7p0.xy);
 	vec3 n_out5p0 = tex_frg_5_read.rgb;
 	float n_out5p1 = tex_frg_5_read.a;
 
@@ -51,12 +78,20 @@ void light() {
 
 }
 "
-graph_offset = Vector2( -457.667, -92.635 )
+graph_offset = Vector2( -335.627, 80.6224 )
 nodes/fragment/0/position = Vector2( 427.167, -12.3333 )
-nodes/fragment/3/node = SubResource( 2 )
-nodes/fragment/3/position = Vector2( -437.084, 137.323 )
-nodes/fragment/4/node = SubResource( 3 )
-nodes/fragment/4/position = Vector2( -216.416, 11.657 )
-nodes/fragment/5/node = SubResource( 4 )
-nodes/fragment/5/position = Vector2( 84.3335, 11.615 )
-nodes/fragment/connections = PoolIntArray( 3, 0, 4, 0, 4, 0, 5, 0, 5, 0, 0, 0 )
+nodes/fragment/3/node = SubResource( 1 )
+nodes/fragment/3/position = Vector2( -620, 60 )
+nodes/fragment/4/node = SubResource( 2 )
+nodes/fragment/4/position = Vector2( -520, 160 )
+nodes/fragment/5/node = SubResource( 3 )
+nodes/fragment/5/position = Vector2( 200, 80 )
+nodes/fragment/6/node = SubResource( 4 )
+nodes/fragment/6/position = Vector2( -460, -60 )
+nodes/fragment/7/node = SubResource( 5 )
+nodes/fragment/7/position = Vector2( 0, 80 )
+nodes/fragment/8/node = SubResource( 6 )
+nodes/fragment/8/position = Vector2( -189, -62 )
+nodes/fragment/9/node = SubResource( 7 )
+nodes/fragment/9/position = Vector2( -196, 54 )
+nodes/fragment/connections = PoolIntArray( 3, 0, 4, 0, 5, 0, 0, 0, 4, 0, 6, 0, 6, 0, 8, 0, 8, 0, 7, 0, 7, 0, 5, 0, 6, 1, 9, 0, 9, 0, 7, 1 )

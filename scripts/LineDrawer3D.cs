@@ -5,18 +5,22 @@ namespace Utility
 {
     class LineDrawer3D : ImmediateGeometry
     {
-        List<Vector3> points = new List<Vector3>();
+        struct Line
+        {   
+            public Vector3 p1;
+            public Vector3 p2;
+            public Color color;
+        }
+        List<Line> lines = new List<Line>();
 
-        public void addLine(Vector3 p1, Vector3 p2)
+        public void AddLine(Vector3 p1, Vector3 p2, Color color)
         {
-            points.Add(p1);
-            points.Add(p2);
-            
+            lines.Add(new Line() { p1 = p1, p2 = p2, color = color });
         }
 
-        public void clearLines() 
+        public void ClearLines() 
         {
-            points.Clear();
+            lines.Clear();
         }
 
         public override void _Process(float delta)
@@ -24,8 +28,12 @@ namespace Utility
             base._Process(delta);
             Clear();
             Begin(Mesh.PrimitiveType.Lines);
-            for (int i = 0; i < points.Count; ++i)
-                AddVertex(points[i]);
+            for (int i = 0; i < lines.Count; ++i)
+            {
+                SetColor(lines[i].color);
+                AddVertex(ToLocal(lines[i].p1));
+                AddVertex(ToLocal(lines[i].p2));
+            }
             End();
         }
     }
