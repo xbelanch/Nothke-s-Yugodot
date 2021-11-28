@@ -1,7 +1,7 @@
 [gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://scripts/main.cs" type="Script" id=1]
-[ext_resource path="res://scripts/CreateForcer.cs" type="Script" id=2]
+[ext_resource path="res://scripts/CarController.cs" type="Script" id=2]
 [ext_resource path="res://shaders/cube_prototype.tres" type="Shader" id=3]
 [ext_resource path="res://shaders/ground_prototype.tres" type="Shader" id=4]
 [ext_resource path="res://car_v2.tscn" type="PackedScene" id=5]
@@ -40,7 +40,7 @@ metallic_specular = 0.0
 script = ExtResource( 1 )
 
 [node name="TP_Camera" type="Camera" parent="."]
-transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -6.05575, 1.90949, 8.18002 )
+transform = Transform( 0.93171, 0, -0.363202, 0, 1, 0, 0.363202, 0, 0.93171, -6.05575, 1.90949, 11.5238 )
 current = true
 fov = 61.1
 
@@ -51,6 +51,10 @@ shadow_enabled = true
 [node name="Car" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.67119, 4.31193, 9.42782 )
 script = ExtResource( 2 )
+raycasyHeightOffset = 0.17
+dampRate = 1.0
+maxSpeedKmh = 19
+tractionEase = 14.42
 
 [node name="CollisionShape" type="CollisionShape" parent="Car"]
 transform = Transform( 0.740698, 0, 0, 0, 1.69661, 0, 0, 0, 1.02322, 0, 0.717085, -0.0464422 )
