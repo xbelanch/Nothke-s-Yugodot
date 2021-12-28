@@ -5,7 +5,9 @@ Implementation of [YuGodot](https://itch.io/jam/stop-waiting-for-godot/rate/1189
 Implement:
 
 * [x] Limit traction force by velocity
-* [ ] Wheels should follow raycast
-* [ ] Front wheels should turn with steering
+* [x] Wheels should follow raycast
+* [x] Front wheels should turn with steering
+* [ ] Should not steer at 0 velocity
+* [ ] Front wheels should turn with steering smoothly
 * [ ] Checkpoints
 * [ ] Make a track

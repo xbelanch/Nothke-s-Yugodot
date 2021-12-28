@@ -106,6 +106,9 @@ public class CarController : RigidBody
 
                 graphicalWheels[i].Translation = wheelRoot.ToLocal(hit + up * 0.28f);
 
+                // Rotate the front wheels
+                if (i < 2) 
+                    graphicalWheels[i].Rotate(Vector3.Up, xInput * Mathf.Deg2Rad(15));
             } else {
                 line.AddLine(origin, dest, Colors.Blue);
             }
