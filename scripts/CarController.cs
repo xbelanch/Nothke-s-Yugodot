@@ -20,6 +20,8 @@ public class CarController : RigidBody
 
     Vector3[] points = new Vector3[4];
 
+    Spatial wheelRoot;
+    MeshInstance[] graphicalWheels = new MeshInstance[4];
     public override void _Ready()
     {
         // create the points
@@ -27,6 +29,12 @@ public class CarController : RigidBody
         points[1] = GetNode<MeshInstance>("car_model/wheel_fr").Translation;
         points[2] = GetNode<MeshInstance>("car_model/wheel_rl").Translation;
         points[3] = GetNode<MeshInstance>("car_model/wheel_rr").Translation;
+
+        graphicalWheels[0] = GetNode<MeshInstance>("car_model/wheel_fl");
+        graphicalWheels[1] = GetNode<MeshInstance>("car_model/wheel_fr");
+        graphicalWheels[2] = GetNode<MeshInstance>("car_model/wheel_rl");
+        graphicalWheels[3] = GetNode<MeshInstance>("car_model/wheel_rr");
+        wheelRoot = graphicalWheels[0].GetParent<Spatial>();
 
         // Create a new line and material
         line = new LineDrawer3D();
@@ -66,6 +74,7 @@ public class CarController : RigidBody
 
         Vector3 tractionPoint = new Vector3();
 
+        int i = 0;
         foreach (var p in points)
         {
             Vector3 wp = ToGlobal(p);
@@ -93,11 +102,15 @@ public class CarController : RigidBody
                 AddForce(normal * (spring + damp), hit - Transform.origin);
 
                 wheelsOnGround++;
-
                 tractionPoint += hit;
+
+                graphicalWheels[i].Translation = wheelRoot.ToLocal(hit + up * 0.28f);
+
             } else {
                 line.AddLine(origin, dest, Colors.Blue);
             }
+
+            i++;
         }
 
         // foreach(var p in points) {
