@@ -11,24 +11,27 @@ public class CarController : RigidBody
     [Export] public float dampRate = 2;
     [Export] public int maxSpeedKmh = 60;
     [Export(PropertyHint.ExpEasing)] public float tractionEase = 2;
+    [Export(PropertyHint.ExpEasing)] public float sidewaysTractionEase = 1;
+    [Export] public float maxTraction = 30;
+    [Export] public float sidewaysTractionMult = 1;
 
     public float torqueMult = 10;
     public float forceMult = 10;
 
     public float wheelBase = 1.052f;
-    public float wheelTrack = 0.644f;
+    public float wheelTrack = 0.6f;
 
-    Vector3[] points = new Vector3[4];
+    Vector3[] wheelPoints = new Vector3[4];
 
     Spatial wheelRoot;
     MeshInstance[] graphicalWheels = new MeshInstance[4];
     public override void _Ready()
     {
-        // create the points
-        points[0] = GetNode<MeshInstance>("car_model/wheel_fl").Translation;
-        points[1] = GetNode<MeshInstance>("car_model/wheel_fr").Translation;
-        points[2] = GetNode<MeshInstance>("car_model/wheel_rl").Translation;
-        points[3] = GetNode<MeshInstance>("car_model/wheel_rr").Translation;
+        // create the wheelPoints
+        wheelPoints[0] = new Vector3(-wheelTrack, 0, wheelBase);
+        wheelPoints[1] = new Vector3(wheelTrack, 0, wheelBase);
+        wheelPoints[2] = new Vector3(-wheelTrack, 0, -wheelBase);
+        wheelPoints[3] = new Vector3(wheelTrack, 0, -wheelBase);
 
         graphicalWheels[0] = GetNode<MeshInstance>("car_model/wheel_fl");
         graphicalWheels[1] = GetNode<MeshInstance>("car_model/wheel_fr");
@@ -70,12 +73,12 @@ public class CarController : RigidBody
 
         int wheelsOnGround = 0;
 
-        float rayLength = 0.6f;
+        float rayLength = 0.5f;
 
         Vector3 tractionPoint = new Vector3();
 
         int i = 0;
-        foreach (var p in points)
+        foreach (var p in wheelPoints)
         {
             Vector3 wp = ToGlobal(p);
             
@@ -89,7 +92,7 @@ public class CarController : RigidBody
                 Vector3 hit = (Vector3) dict["position"];
                 Vector3 normal = (Vector3) dict["normal"];
 
-                line.AddLine(origin, hit, Colors.Red);
+                line.AddLine(origin, hit, Colors.Cyan);
 
                 float distFromTarget = (dest - hit).Length();
 
@@ -104,49 +107,29 @@ public class CarController : RigidBody
                 wheelsOnGround++;
                 tractionPoint += hit;
 
-                graphicalWheels[i].Translation = wheelRoot.ToLocal(hit + up * 0.28f);
+                graphicalWheels[i].Translation = wheelRoot.ToLocal(hit + up * 0.3f);
 
                 // Rotate the front wheels
+                if (i % 2 == 0)
+                    graphicalWheels[i].Rotation = new Vector3(0, Mathf.Deg2Rad(180), 0);
+                else
+                    graphicalWheels[i].Rotation = new Vector3(0, Mathf.Deg2Rad(0), 0);
+            
                 if (i < 2) 
-                    graphicalWheels[i].Rotate(Vector3.Up, xInput * Mathf.Deg2Rad(15));
-            } else {
+                    graphicalWheels[i].Rotate(Vector3.Up, -xInput * Mathf.Deg2Rad(30));
+            } 
+            else
                 line.AddLine(origin, dest, Colors.Blue);
-            }
 
             i++;
         }
-
-        // foreach(var p in points) {
-        //     var origin = ToGlobal(p) + up  * 0.2f;
-        //     var dest = origin - up * rayLength;
-        //     var dict = spaceState.IntersectRay(origin, dest);
-        //     if (dict.Count > 0) {
-        //         var obj = (Godot.Object)dict["collider"];
-        //         var hit = (Vector3)dict["position"];
-        //         var normal = (Vector3)dict["normal"];
-
-        //         // Draw 3D line
-        //         line3D.AddLine(origin, hit, Colors.DarkBlue);
-
-        //         float distFromTarget = (dest - hit).Length();
-        //         float spring = 10 * distFromTarget;
-
-        //         Vector3 pointVelo = GetVelocityAtPoint(origin);
-        //         line3D.AddLine(origin, origin + pointVelo, Colors.White);
-                
-        //         float veloAlongWheel = up.Dot(pointVelo);
-        //         float damp = -veloAlongWheel;
-
-        //         AddForce(normal * (spring + damp), hit - Transform.origin);
-                
-        //         wheelsOnGround++;
-        //     } else {
-        //         // Draw 3D line
-        //         line3D.AddLine(origin, dest, Colors.GreenYellow);
-        //     }
-        // }
-
         // GD.Print(wheelsOnGround);
+
+        line.AddLine(Translation, Translation + LinearVelocity, Colors.Yellow);
+        Vector3 right = Transform.basis.x;
+        float sidewaysSpeed = right.Dot(LinearVelocity);
+        line.AddLine(Translation, Translation + right * sidewaysSpeed, Colors.Red);
+
         if (wheelsOnGround > 0) {
 
             float wheelFactor = wheelsOnGround / 4.0f;
@@ -157,16 +140,23 @@ public class CarController : RigidBody
             line.AddLine(midPoint, midPoint + Vector3.Right * 1, Colors.Red);
             line.AddLine(midPoint, midPoint + Vector3.Forward * 1, Colors.Red);
 
-            AddTorque(-Transform.basis.y * xInput * torqueMult);
             float forwardVelocity = forward.Dot(LinearVelocity); 
+            float steeringFactor = Mathf.Clamp(Mathf.InverseLerp(0, 2, speed), 0, 1);
+
+            AddTorque(-Transform.basis.y * xInput * torqueMult * steeringFactor);
 
             float maxSpeed = maxSpeedKmh / 3.6f;
             float tractionMult = 1 - Mathf.Ease(Math.Abs(forwardVelocity) / maxSpeed, tractionEase);
             float tractionForce =  tractionMult * yInput * forceMult * wheelFactor;
 
             line.AddLine(Vector3.Zero, Vector3.Up * tractionMult, Colors.Red);
-            if ( forwardVelocity < 60 / 3.6f)
-                AddForce(Transform.basis.z * tractionForce, midPoint - Transform.origin);
+
+            float sidewaysSign = Math.Sign(sidewaysSpeed);
+            Vector3 sidewaysTraction = -right * sidewaysTractionMult *
+                (Mathf.Ease(Mathf.Abs(sidewaysSpeed) / maxTraction, sidewaysTractionEase) * maxTraction) * sidewaysSign;
+            AddForce(
+                forward * tractionForce + sidewaysTraction, 
+                midPoint - Transform.origin);
         }
     }
 }

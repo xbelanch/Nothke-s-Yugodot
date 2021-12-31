@@ -8,6 +8,7 @@ Implement:
 * [x] Wheels should follow raycast
 * [x] Front wheels should turn with steering
 * [ ] Should not steer at 0 velocity
+* [ ] Sideways traction
 * [ ] Front wheels should turn with steering smoothly
 * [ ] Checkpoints
 * [ ] Make a track

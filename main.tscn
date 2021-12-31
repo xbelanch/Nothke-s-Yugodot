@@ -4,19 +4,16 @@
 [ext_resource path="res://scripts/CarController.cs" type="Script" id=2]
 [ext_resource path="res://shaders/cube_prototype.tres" type="Shader" id=3]
 [ext_resource path="res://shaders/ground_prototype.tres" type="Shader" id=4]
-[ext_resource path="res://car_v2.tscn" type="PackedScene" id=5]
+[ext_resource path="res://car_model.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scripts/Crate.cs" type="Script" id=6]
-
-[sub_resource type="BoxShape" id=1]
-extents = Vector3( 1, 0.414409, 1.57606 )
 
 [sub_resource type="CubeMesh" id=3]
 
 [sub_resource type="ShaderMaterial" id=4]
 shader = ExtResource( 4 )
 
-[sub_resource type="ConvexPolygonShape" id=5]
-points = PoolVector3Array( -1, 1, 1, 1, 1, -1, 1, 1, 1, -1, 1, -1, -1, -1, 1, 1, -1, -1, 1, -1, 1, -1, -1, -1, 1, 1, 1, -1, 1, -1, 1, 1, -1, -1, 1, 1, 1, -1, 1, -1, -1, -1, 1, -1, -1, -1, -1, 1, 1, 1, 1, -1, -1, 1, -1, 1, 1, 1, -1, 1, 1, 1, -1, -1, -1, -1, -1, 1, -1, 1, -1, -1 )
+[sub_resource type="ConvexPolygonShape" id=12]
+points = PoolVector3Array( -1, -1, -1, 1, 1, 1, 1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1, -1, -1, -1, 1, -1, 1, -1 )
 
 [sub_resource type="CubeMesh" id=6]
 
@@ -36,11 +33,14 @@ metallic_specular = 0.0
 
 [sub_resource type="CubeMesh" id=10]
 
+[sub_resource type="BoxShape" id=11]
+extents = Vector3( 0.203293, 0.203536, 0.205881 )
+
 [node name="Main" type="Spatial"]
 script = ExtResource( 1 )
 
 [node name="TP_Camera" type="Camera" parent="."]
-transform = Transform( 0.93171, 0, -0.363202, 0, 1, 0, 0.363202, 0, 0.93171, -6.05575, 1.90949, 11.5238 )
+transform = Transform( 0.93171, 0, -0.363202, 0, 1, 0, 0.363202, 0, 0.93171, -3.77973, 1.90949, 5.68521 )
 current = true
 fov = 61.1
 
@@ -48,40 +48,18 @@ fov = 61.1
 transform = Transform( 0.535208, 0.21863, 0.815937, -0.84472, 0.138522, 0.516971, 0, -0.965926, 0.258819, 9, 9, 0 )
 shadow_enabled = true
 
-[node name="Car" type="RigidBody" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.67119, 4.31193, 9.42782 )
-script = ExtResource( 2 )
-raycasyHeightOffset = 0.17
-dampRate = 1.0
-maxSpeedKmh = 19
-tractionEase = 14.42
-
-[node name="CollisionShape" type="CollisionShape" parent="Car"]
-transform = Transform( 0.740698, 0, 0, 0, 1.69661, 0, 0, 0, 1.02322, 0, 0.717085, -0.0464422 )
-shape = SubResource( 1 )
-
-[node name="car_model" parent="Car" instance=ExtResource( 5 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00566792, 0.00964165, -0.0334625 )
-
-[node name="FP_Camera" type="Camera" parent="Car"]
-transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.284993, 1.166, -0.0382285 )
-fov = 60.8
-
-[node name="draw" type="ImmediateGeometry" parent="Car"]
-cast_shadow = 0
-
 [node name="Floor" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 0.05, 0, 0, 0, 1, 0, 0, 0 )
 mode = 1
 
 [node name="MeshInstance" type="MeshInstance" parent="Floor"]
-transform = Transform( 100, 0, 0, 0, 0.05, 0, 0, 0, 100, 0, 0, 0 )
+transform = Transform( -100, -8.74228e-07, -1.50996e-05, -8.74228e-06, 10, 0, -1.50996e-05, -1.32005e-13, 100, 0, -10, 0 )
 mesh = SubResource( 3 )
 material/0 = SubResource( 4 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Floor"]
-transform = Transform( 100, 0, 0, 0, 0.05, 0, 0, 0, 100, 0, 0, 0 )
-shape = SubResource( 5 )
+transform = Transform( -100, -8.74228e-07, -1.50996e-05, -8.74228e-06, 10, 0, -1.50996e-05, -1.32005e-13, 100, 0, -10, 0 )
+shape = SubResource( 12 )
 
 [node name="Box" type="StaticBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1 )
@@ -117,3 +95,24 @@ shape = SubResource( 9 )
 transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0 )
 mesh = SubResource( 10 )
 material/0 = null
+
+[node name="Car" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.98669, -1.93806 )
+mass = 1.53163
+script = ExtResource( 2 )
+raycasyHeightOffset = -0.183
+tractionEase = 33.1285
+
+[node name="CollisionShape" type="CollisionShape" parent="Car"]
+transform = Transform( 3.54445, 0, 0, 0, 3.49343, 0, 0, 0, 7.97404, 0, 0.508768, -0.0513656 )
+shape = SubResource( 11 )
+
+[node name="car_model" parent="Car" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.206958, 0 )
+
+[node name="FP_Camera" type="Camera" parent="Car"]
+transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0.33188, 1.77014, -6.9096 )
+fov = 60.8
+
+[node name="draw" type="ImmediateGeometry" parent="Car"]
+cast_shadow = 0
