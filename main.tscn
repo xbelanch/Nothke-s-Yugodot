@@ -1,19 +1,18 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://scripts/main.cs" type="Script" id=1]
 [ext_resource path="res://scripts/CarController.cs" type="Script" id=2]
 [ext_resource path="res://shaders/cube_prototype.tres" type="Shader" id=3]
-[ext_resource path="res://shaders/ground_prototype.tres" type="Shader" id=4]
 [ext_resource path="res://car_model.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scripts/Crate.cs" type="Script" id=6]
 
-[sub_resource type="CubeMesh" id=3]
+[sub_resource type="CubeMesh" id=15]
 
-[sub_resource type="ShaderMaterial" id=4]
-shader = ExtResource( 4 )
+[sub_resource type="SpatialMaterial" id=17]
+albedo_color = Color( 0.0941176, 0.698039, 0.258824, 1 )
 
-[sub_resource type="ConvexPolygonShape" id=12]
-points = PoolVector3Array( -1, -1, -1, 1, 1, 1, 1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1, -1, -1, -1, 1, -1, 1, -1 )
+[sub_resource type="ConvexPolygonShape" id=16]
+points = PoolVector3Array( 1, 1, 1, 1, 1, -1, -1, 1, 1, 1, -1, 1, 1, -1, -1, -1, 1, -1, -1, -1, 1, -1, -1, -1 )
 
 [sub_resource type="CubeMesh" id=6]
 
@@ -40,7 +39,7 @@ extents = Vector3( 0.203293, 0.203536, 0.205881 )
 script = ExtResource( 1 )
 
 [node name="TP_Camera" type="Camera" parent="."]
-transform = Transform( 0.93171, 0, -0.363202, 0, 1, 0, 0.363202, 0, 0.93171, -3.77973, 1.90949, 5.68521 )
+transform = Transform( 0.74995, 0.253794, -0.610872, 1.30388e-08, 0.923472, 0.383667, 0.661495, -0.287731, 0.692557, -21.5841, 11.7166, 20.7338 )
 current = true
 fov = 61.1
 
@@ -53,13 +52,13 @@ transform = Transform( 1, 0, 0, 0, 0.05, 0, 0, 0, 1, 0, 0, 0 )
 mode = 1
 
 [node name="MeshInstance" type="MeshInstance" parent="Floor"]
-transform = Transform( -100, -8.74228e-07, -1.50996e-05, -8.74228e-06, 10, 0, -1.50996e-05, -1.32005e-13, 100, 0, -10, 0 )
-mesh = SubResource( 3 )
-material/0 = SubResource( 4 )
+transform = Transform( 14.9725, 0, 0, 0, 1, 0, 0, 0, 14.4553, 0, 0, 0 )
+mesh = SubResource( 15 )
+material/0 = SubResource( 17 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Floor"]
-transform = Transform( -100, -8.74228e-07, -1.50996e-05, -8.74228e-06, 10, 0, -1.50996e-05, -1.32005e-13, 100, 0, -10, 0 )
-shape = SubResource( 12 )
+transform = Transform( 14.9725, 0, 0, 0, 1, 0, 0, 0, 14.4553, 0, 0, 0 )
+shape = SubResource( 16 )
 
 [node name="Box" type="StaticBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1 )
@@ -97,21 +96,18 @@ mesh = SubResource( 10 )
 material/0 = null
 
 [node name="Car" type="RigidBody" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.98669, -1.93806 )
-mass = 1.53163
+transform = Transform( 0.21199, 0, -0.977272, 0, 1, 0, 0.977272, 0, 0.21199, 2.67199, 1.08277, 3.73198 )
 script = ExtResource( 2 )
-raycasyHeightOffset = -0.183
-tractionEase = 33.1285
 
 [node name="CollisionShape" type="CollisionShape" parent="Car"]
-transform = Transform( 3.54445, 0, 0, 0, 3.49343, 0, 0, 0, 7.97404, 0, 0.508768, -0.0513656 )
+transform = Transform( 3.54445, 0, 0, 0, 3.49343, 0, 0, 0, 7.97404, 0, 0.53548, -0.0513656 )
 shape = SubResource( 11 )
 
 [node name="car_model" parent="Car" instance=ExtResource( 5 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.206958, 0 )
+transform = Transform( 1, 0, -7.45058e-08, 0, 1, 0, 7.45058e-08, 0, 1, -1.49398, -0.170581, -5.96046e-07 )
 
 [node name="FP_Camera" type="Camera" parent="Car"]
-transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0.33188, 1.77014, -6.9096 )
+transform = Transform( -1, 0, -1.63913e-07, 0, 1, 0, 1.78814e-07, 0, -1, -1.24731, 0.977208, -0.144446 )
 fov = 60.8
 
 [node name="draw" type="ImmediateGeometry" parent="Car"]
