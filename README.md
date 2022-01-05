@@ -12,3 +12,7 @@ Implement:
 * [ ] Front wheels should turn with steering smoothly
 * [ ] Checkpoints
 * [ ] Make a track
+
+Resources:
+
+- *Catamount* car belongs to [Unity3D Car Tutorial](https://web.archive.org/web/20100425005854/https://unity3d.com/support/resources/tutorials/car-tutorial).
